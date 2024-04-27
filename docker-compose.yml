@@ -1,0 +1,33 @@
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: dockerfile.flask
+    volumes:
+      - ./practice_matrix.db:/app/practice_matrix.db
+    networks:
+      - my-network
+
+  bot:
+    build:
+      context: .
+      dockerfile: dockerfile.bot
+    volumes:
+      - ./practice_matrix.db:/app/practice_matrix.db
+    networks:
+      - my-network
+
+  nginx:
+    build:
+      context: .
+      dockerfile: dockerfile.nginx
+    ports:
+      - '80:80'
+    depends_on:
+      - flask
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

@@ -1,0 +1,5 @@
+aiogram
+asyncio
+flask
+aiosqlite
+gunicorn

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Матрица практик</title>
+		<style>
+			body {
+				font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+					Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue',
+					sans-serif;
+				margin: 0;
+				padding: 0;
+			}
+
+			h1,
+			h2 {
+				margin-bottom: 20px;
+				text-align: center;
+			}
+
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+
+			th,
+			td {
+				border: 1px solid #bebdbd;
+				padding: 8px;
+				text-align: left;
+			}
+
+			th {
+				background-color: #f2f2f2;
+			}
+
+			tr:nth-child(even) {
+				background-color: #fdfdfd;
+			}
+
+			tr:hover {
+				background-color: #64bce6;
+			}
+
+			form {
+				width: 80%;
+				margin: 0 auto;
+			}
+
+			label {
+				display: block;
+				margin-bottom: 5px;
+			}
+
+			input[type='text'] {
+				width: calc(100% - 16px);
+				padding: 8px;
+				margin-bottom: 10px;
+				border: 1px solid #181010;
+				border-radius: 4px;
+				box-sizing: border-box;
+			}
+
+			button {
+				padding: 10px 20px;
+				background-color: #47a14a;
+				color: white;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+			}
+
+			button:hover {
+				background-color: #45a049;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Матрица практик</h1>
+		<table>
+			<colgroup>
+				<col style="width: 10%" />
+				<col style="width: 10%" />
+				<col style="width: 15%" />
+				<col style="width: 10%" />
+				<col style="width: 10%" />
+				<col style="width: 10%" />
+				<col style="width: 10%" />
+				<col style="width: 10%" />
+				<col style="width: 15%" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>Имя компании</th>
+					<th>Контакты</th>
+					<th>Направление подготовки</th>
+					<th>Количество мест</th>
+					<th>Комментарии</th>
+					<th>Договор</th>
+					<th>Код направления</th>
+					<th>Форма собственности</th>
+					<th>Действия</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for row in data %}
+				<tr>
+					<td>{{ row[0] }}</td>
+					<td>{{ row[1] }}</td>
+					<td>{{ row[2] }}</td>
+					<td>{{ row[3] }}</td>
+					<td>{{ row[4] }}</td>
+					<td>{{ row[5] }}</td>
+					<td>{{ row[6] }}</td>
+					<td>{{ row[7] }}</td>
+					<td>
+						<a href="/edit/{{ row[0] }}">Редактировать строку</a>
+						<a href="/delete/{{ row[0] }}">Удалить строку</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<h2>Добавить новую строку</h2>
+		<form action="{{ url_for('add') }}" method="post">
+			<label for="compname">Название компании: </label>
+			<input type="text" id="compname" name="compname" required /><br />
+			<label for="contacts">Контакты: </label>
+			<input type="text" id="contacts" name="contacts" required /><br />
+			<label for="direction">Направление подготовки: </label>
+			<input type="text" id="direction" name="direction" required /><br />
+			<label for="people">Количество мест: </label>
+			<input type="text" id="people" name="people" required /><br />
+			<label for="comment">Комментарии: </label>
+			<input type="text" id="comment" name="comment" /><br />
+			<label for="ifcontract">Договор: </label>
+			<input type="text" id="ifcontract" name="ifcontract" required /><br />
+			<label for="direction_code">Код направления: </label>
+			<input
+				type="text"
+				id="direction_code"
+				name="direction_code"
+				required
+			/><br />
+			<label for="ownership_form">Форма собственности:</label>
+			<input
+				type="text"
+				id="ownership_form"
+				name="ownership_form"
+				required
+			/><br />
+			<button type="submit">Добавить</button>
+		</form>
+	</body>
+</html>
