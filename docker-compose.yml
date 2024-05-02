@@ -2,7 +2,9 @@ services:
   flask:
     build:
       context: .
-      dockerfile: dockerfile.flask
+      dockerfile: dockerfile.py
+    working_dir: /app
+    command: "gunicorn --workers 4 -b 0.0.0.0:8000 app:app"
     volumes:
       - ./practice_matrix.db:/app/practice_matrix.db
     networks:
@@ -11,20 +13,23 @@ services:
   bot:
     build:
       context: .
-      dockerfile: dockerfile.bot
+      dockerfile: dockerfile.py
+    working_dir: /app
+    command: 'python run.py'
     volumes:
       - ./practice_matrix.db:/app/practice_matrix.db
     networks:
       - my-network
 
   nginx:
-    build:
-      context: .
-      dockerfile: dockerfile.nginx
+    image: nginx:1.25.5-alpine
     ports:
       - '80:80'
     depends_on:
       - flask
+    volumes:
+      - './nginx.conf:/etc/nginx/nginx.conf'
+      - './conf.d:/etc/nginx/conf.d'
     networks:
       - my-network
 
