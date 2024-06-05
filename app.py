@@ -1,11 +1,27 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
+from config import PREFIX_URL
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
 db_path = os.path.join(os.path.dirname(__file__), 'practice_matrix.db')
 
+
+USERNAME = 'admin'
+PASSWORD = 'Practicebotstart!'
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'username' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/')
+@login_required
 def index():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -15,6 +31,7 @@ def index():
     return render_template('index.html', data=data)
 
 @app.route('/add', methods=['POST'])
+@login_required
 def add():
     if request.method == 'POST':
         compname = request.form['compname']
@@ -34,6 +51,7 @@ def add():
         return redirect(url_for('index'))
 
 @app.route('/edit/<string:name>', methods=['GET', 'POST'])
+@login_required
 def edit(name):
     if request.method == 'POST':
         new_compname = request.form['compname']
@@ -60,6 +78,7 @@ def edit(name):
         return render_template('edit.html', data=data)
 
 @app.route('/delete/<string:name>')
+@login_required
 def delete(name):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
@@ -67,6 +86,25 @@ def delete(name):
     conn.commit()
     conn.close()
     return redirect(url_for('index'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = None
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        if username == USERNAME and password == PASSWORD:
+            session['username'] = username
+            return redirect(url_for('index'))
+        else:
+            error = 'Неверный логин или пароль'
+    return render_template('login.html', error=error)
+
+@app.route('/logout')
+@login_required
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
 
 if __name__ == '__main__':
     app.run(debug=True)
